@@ -23,7 +23,7 @@ export default async function Home() {
                             <figcaption className="text-sm">Owners</figcaption>
                             <ul className="flex gap-2">
                                 {event.owners.map((owner) => (
-                                    <li>{owner.name}</li>
+                                    <li key={owner.id}>{owner.name}</li>
                                 ))}
                             </ul>
                         </figure>
@@ -32,9 +32,12 @@ export default async function Home() {
                     <figure>
                         <figcaption className="text-sm">Attendees</figcaption>
                         <ul className="flex gap-2">
-                            {event.attendees.map((owner) => (
-                                <li className="bg-sky-800 py-1 px-2 rounded-full text-sm">
-                                    {owner.name}
+                            {event.attendees.map((attendee) => (
+                                <li
+                                    key={attendee.id}
+                                    className="bg-red-900 py-1 px-2 rounded-full text-sm"
+                                >
+                                    {attendee.name}
                                 </li>
                             ))}
                         </ul>
