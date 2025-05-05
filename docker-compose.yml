@@ -1,0 +1,28 @@
+services:
+  db:
+    env_file: ".env"
+    image: postgres:17-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  minio:
+    env_file: ".env"
+    image: quay.io/minio/minio:RELEASE.2024-11-07T00-52-20Z
+    ports:
+      - 9000:9000
+      - 9001:9001
+    volumes:
+      - minio-data:/data
+    command: server /data --console-address ":9001"
+    depends_on:
+      db: 
+        condition: service_healthy
+volumes:
+  pgdata:
+  minio-data:

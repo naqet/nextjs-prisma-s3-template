@@ -1,0 +1,60 @@
+generator client {
+    provider = "prisma-client-js"
+    output   = "../src/generated/prisma"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id                  Int          @id @default(autoincrement())
+    name                String
+    email               String       @unique
+    password            String
+    ownedEvents         Event[]      @relation("ownedEvents")
+    attendedEvents      Event[]      @relation("attendedEvents")
+    sentInvitations     Invitation[] @relation("sentInvitations")
+    receivedInvitations Invitation[] @relation("receivedInvitations")
+}
+
+model Event {
+    id          Int           @id @default(autoincrement())
+    title       String        @unique
+    description String
+    place       String
+    date        DateTime
+    owners      User[]        @relation("ownedEvents")
+    attendees   User[]        @relation("attendedEvents")
+    agenda      AgendaPoint[]
+    invitations Invitation[]
+}
+
+model Invitation {
+    id         Int              @id @default(autoincrement())
+    sender     User             @relation("sentInvitations", fields: [senderId], references: [id])
+    senderId   Int
+    receiver   User             @relation("receivedInvitations", fields: [receiverId], references: [id])
+    receiverId Int
+    event      Event            @relation(fields: [eventId], references: [id])
+    eventId    Int
+    status     InvitationStatus
+    createdAt  DateTime
+}
+
+enum InvitationStatus {
+    ACCEPTED
+    PENDING
+    REJECTED
+}
+
+model AgendaPoint {
+    id          Int      @id @default(autoincrement())
+    title       String
+    description String
+    startDate   DateTime
+    endDate     DateTime
+    event       Event    @relation(fields: [eventId], references: [id])
+    eventId     Int
+}
