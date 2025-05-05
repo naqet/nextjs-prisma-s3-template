@@ -1,14 +1,46 @@
 import prisma from "@/lib/prisma";
 
 export default async function Home() {
-    const users = await prisma.user.findMany();
+    const events = await prisma.event.findMany({
+        include: {
+            owners: true,
+            attendees: true,
+        },
+    });
     return (
-        <div className="p-4">
-            {users.map((user) => (
-                <div key={user.id} className="bg-red-900">
-                    {user.name}
-                </div>
+        <ul className="p-4 flex flex-col gap-4">
+            {events.map((event) => (
+                <li
+                    key={event.id}
+                    className="p-4 flex flex-col gap-2 border border-white rounded-md w-max"
+                >
+                    <div className="flex justify-between">
+                        <hgroup>
+                            <h2 className="text-xl font-bold">{event.title}</h2>
+                            <p>{event.description}</p>
+                        </hgroup>
+                        <figure>
+                            <figcaption className="text-sm">Owners</figcaption>
+                            <ul className="flex gap-2">
+                                {event.owners.map((owner) => (
+                                    <li>{owner.name}</li>
+                                ))}
+                            </ul>
+                        </figure>
+                    </div>
+
+                    <figure>
+                        <figcaption className="text-sm">Attendees</figcaption>
+                        <ul className="flex gap-2">
+                            {event.attendees.map((owner) => (
+                                <li className="bg-sky-800 py-1 px-2 rounded-full text-sm">
+                                    {owner.name}
+                                </li>
+                            ))}
+                        </ul>
+                    </figure>
+                </li>
             ))}
-        </div>
+        </ul>
     );
 }
