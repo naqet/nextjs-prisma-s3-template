@@ -5,7 +5,7 @@ export default async function Home() {
     return (
         <div className="p-4">
             {users.map((user) => (
-                <div className="bg-red-900">{user.name}</div>
+                <div key={user.id} className="bg-red-900">{user.name}</div>
             ))}
         </div>
     );
