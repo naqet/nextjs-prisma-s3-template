@@ -7,8 +7,7 @@
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
-        "prettier": "prettier . --write",
-        "db:reset": "prisma migrate reset"
+        "prettier": "prettier . --write"
     },
     "dependencies": {
         "@aws-sdk/client-s3": "^3.802.0",

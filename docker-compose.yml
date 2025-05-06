@@ -1,5 +1,6 @@
 services:
     db:
+        container_name: "codegames_db"
         env_file: ".env"
         image: postgres:17-alpine
         ports:
@@ -12,6 +13,7 @@ services:
             timeout: 5s
             retries: 5
     minio:
+        container_name: "codegames_minio"
         env_file: ".env"
         image: quay.io/minio/minio:RELEASE.2024-11-07T00-52-20Z
         ports:

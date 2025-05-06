@@ -1,6 +1,11 @@
 // Prisma seed script
+import minio from "@/lib/minio";
 import { PrismaClient } from "../src/generated/prisma";
 import { InvitationStatus } from "../src/generated/prisma";
+import {
+    BucketAlreadyOwnedByYou,
+    CreateBucketCommand,
+} from "@aws-sdk/client-s3";
 
 const prisma = new PrismaClient();
 
@@ -425,6 +430,26 @@ async function main() {
             attendees: { connect: [{ id: 9 }, { id: 4 }, { id: 6 }] },
         },
     });
+
+    await createBuckets();
+}
+
+async function createBuckets() {
+    const events = await prisma.event.findMany();
+
+    for (const event of events) {
+        try {
+            const bucketName = event.title.replaceAll(" ", "-").toLowerCase();
+            await minio.send(new CreateBucketCommand({ Bucket: bucketName }));
+        } catch (e) {
+            if (e instanceof BucketAlreadyOwnedByYou) {
+                // Bucket already exists
+                continue;
+            } else {
+                console.log(e);
+            }
+        }
+    }
 }
 
 main()

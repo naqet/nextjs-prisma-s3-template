@@ -29,6 +29,7 @@ model Event {
     attendees   User[]        @relation("attendedEvents")
     agenda      AgendaPoint[]
     invitations Invitation[]
+    invoices    Invoice[]
 }
 
 model Invitation {
@@ -57,4 +58,15 @@ model AgendaPoint {
     endDate     DateTime
     event       Event    @relation(fields: [eventId], references: [id])
     eventId     Int
+}
+
+model Invoice {
+    id       String   @id @default(uuid())
+    fileName String
+    company  String
+    amount   Float
+    date     DateTime
+    type     String
+    eventId  Int
+    event    Event    @relation(fields: [eventId], references: [id])
 }
